@@ -1,0 +1,13 @@
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 1
+names: ['objects']
+
+roboflow:
+  workspace: test-fxlud
+  project: car-defect-0dhxr
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/test-fxlud/car-defect-0dhxr/dataset/1

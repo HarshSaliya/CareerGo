@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+{% csrf_token %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-12 mb-4">
+      <h2 class="text-center mb-5">User Profile Dashboard</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Personal Info Section -->
+    <div class="col-lg-4">
+      <div class="card shadow-lg mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Personal Information</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Phone:</strong> {{ personal_info.phone }}</p>
+          <p><strong>Address:</strong> {{ personal_info.address }}</p>
+          <p><strong>City:</strong> {{ personal_info.city }}</p>
+          <p><strong>State:</strong> {{ personal_info.state }}</p>
+          <p><strong>Country:</strong> {{ personal_info.country }}</p>
+          {% if personal_info.profile_image %}
+          <p><strong>Profile Image:</strong></p>
+          <img src="{{ personal_info.profile_image.url }}" alt="Profile Image" class="img-fluid rounded" width="150">
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Education Info Section -->
+    <div class="col-lg-4">
+      <div class="card shadow-lg mb-4">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Education Information</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Degree:</strong> {{ education_info.highest_degree }}</p>
+          <p><strong>University:</strong> {{ education_info.university_name }}</p>
+          <p><strong>Passing Year:</strong> {{ education_info.passing_year }}</p>
+          <p><strong>Grade:</strong> {{ education_info.grade }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job & Project Info Section -->
+    <div class="col-lg-4">
+      <div class="card shadow-lg mb-4">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">Job & Project Information</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Current Position:</strong> {{ job_info.current_position }}</p>
+          <p><strong>Company Name:</strong> {{ job_info.company_name }}</p>
+          <p><strong>Years of Experience:</strong> {{ job_info.years_of_experience }} years</p>
+          <p><strong>Skills:</strong> {{ job_info.skills }}</p>
+          {% if job_info.resume %}
+          <p><strong>Resume:</strong> <a href="{{ job_info.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Download Resume</a></p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Button -->
+  <div class="row justify-content-center mt-4">
+    <a href="{% url 'edit_profile' %}" class="btn btn-info btn-lg">Edit Profile</a>
+  </div>
+</div>
+{% endblock %}
