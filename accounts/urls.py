@@ -8,4 +8,5 @@ urlpatterns=[
     path('dashboard', views.dashboard, name='dashboard'),
     
     path('profile/', views.user_profile, name='user_profile'),
+    path('profile/<str:username>/', views.user_profile, name='user_profile'),
 ]

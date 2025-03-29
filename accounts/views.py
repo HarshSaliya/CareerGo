@@ -44,7 +44,7 @@ def register(request):
                                                    email=email,
                                                    first_name=first_name,
                                                    last_name=last_name,
-                                                   role=role)
+                                                   role=role) # type: ignore
                    user.save()
                    messages.success(request,'You are now registered and can log in')
                    return redirect('login')
@@ -70,23 +70,57 @@ def dashboard(request):
         'applications': user_applications
     }
     return render(request,'accounts/dashboard.html', context)
-
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import PersonalInfo, EducationInfo, JobInfo
 
 @login_required
 def user_profile(request):
-    personal_info = PersonalInfo.objects.get(user=request.user)
-    education_info = EducationInfo.objects.get(user=request.user)
-    job_info = JobInfo.objects.get(user=request.user)
+    user = request.user
+    personal_info, _ = PersonalInfo.objects.get_or_create(user=user)
+    education_info, _ = EducationInfo.objects.get_or_create(user=user)
+    job_info, _ = JobInfo.objects.get_or_create(user=user)
 
+    if request.method == 'POST':
+        # Update Personal Info
+        if 'update_personal' in request.POST:
+            personal_info.phone = request.POST.get('phone')
+            personal_info.address = request.POST.get('address')
+            personal_info.city = request.POST.get('city')
+            personal_info.state = request.POST.get('state')
+            personal_info.country = request.POST.get('country')
+            if request.FILES.get('profile_image'):
+                personal_info.profile_image = request.FILES['profile_image']
+            personal_info.save()
+            messages.success(request, 'Personal information updated successfully!')
+        
+        # Update Education Info
+        elif 'update_education' in request.POST:
+            education_info.highest_degree = request.POST.get('highest_degree')
+            education_info.university_name = request.POST.get('university_name')
+            education_info.passing_year = request.POST.get('passing_year')
+            education_info.grade = request.POST.get('grade')
+            education_info.save()
+            messages.success(request, 'Education information updated successfully!')
+        
+        # Update Job Info
+        elif 'update_job' in request.POST:
+            job_info.current_position = request.POST.get('current_position')
+            job_info.company_name = request.POST.get('company_name')
+            job_info.years_of_experience = request.POST.get('years_of_experience')
+            job_info.skills = request.POST.get('skills')
+            if request.FILES.get('resume'):
+                job_info.resume = request.FILES['resume']
+            job_info.save()
+            messages.success(request, 'Job information updated successfully!')
+        
+        return redirect('user_profile')
+    
     context = {
+        'user': user,
         'personal_info': personal_info,
         'education_info': education_info,
         'job_info': job_info,
     }
     return render(request, 'accounts/user_profile.html', context)
-
-
