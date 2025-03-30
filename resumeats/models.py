@@ -1,8 +1,10 @@
 from django.db import models
+from django.conf import settings
 
 class Resume(models.Model):
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="resumes"
+    )
     profession = models.CharField(
         max_length=100,
         choices=[
@@ -11,7 +13,6 @@ class Resume(models.Model):
             ("Java Backend", "Java Backend"),
             ("Data Science", "Data Science"),
             ("PHP", "PHP"),
-            # Add more professions as needed
         ]
     )
     experience_level = models.CharField(
@@ -22,7 +23,11 @@ class Resume(models.Model):
             ("Experienced", "Experienced"),
         ]
     )
-    resume_file = models.FileField(upload_to="media/resumes")
+    
+    resume_file = models.FileField(upload_to="resumes/%Y/%m/%d/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
     score = models.IntegerField(null=True, blank=True)
     feedback = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.profession}"
