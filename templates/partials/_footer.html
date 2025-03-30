@@ -1,14 +1,73 @@
 {% load static %}
-<footer>
+<footer class="footer text-white py-4">
     <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="inner-content">
-            <p>Copyright &copy AGENCY VERSE</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
+        <div class="row text-center text-md-start">
+            <!-- About Section -->
+            <div class="col-md-4 mb-3">
+                <h5 class="fw-bold text-uppercase">Career <span class="text-primary">GO</span></h5>
+                <p class="small">Find your next great role with ease. We connect job seekers with top companies.</p>
+            </div>
 
-  
+            <!-- Quick Links -->
+            <div class="col-md-4 mb-3">
+                <h5 class="fw-bold text-uppercase">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}" class="footer-link">Home</a></li>
+                    <li><a href="{% url 'jobs' %}" class="footer-link">Jobs</a></li>
+                    <li><a href="{% url 'about' %}" class="footer-link">About Us</a></li>
+                    <li><a href="{% url 'contact' %}" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Social Media -->
+            <div class="col-md-4 mb-3 text-center text-md-end">
+                <h5 class="fw-bold text-uppercase">Follow Us</h5>
+                <a href="#" class="footer-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="footer-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="footer-icon"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+
+        <hr class="bg-light">
+
+        <!-- Copyright -->
+        <div class="row">
+            <div class="col text-center">
+                <p class="mb-0 small">&copy; 2025 Career GO. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        background-color: #111; /* Matches dark theme */
+        color: #fff;
+    }
+
+    .footer-link {
+        color: #bbb;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .footer-link:hover {
+        color: #a855f7; /* Purple hover effect */
+    }
+
+    .footer-icon {
+        color: #bbb;
+        font-size: 1.3rem;
+        margin-right: 10px;
+        transition: transform 0.3s ease-in-out, color 0.3s;
+    }
+
+    .footer-icon:hover {
+        color: #a855f7;
+        transform: scale(1.2);
+    }
+</style>
+
+<!-- FontAwesome for Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

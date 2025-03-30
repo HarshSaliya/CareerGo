@@ -1,6 +1,8 @@
 {% load static %}
 <!-- Header -->
 <header class="">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <a class="navbar-brand" href="{% url 'index' %}"><h2>Career<em> Go</em></h2></a>
@@ -51,20 +53,27 @@
                   </li>
 
 
-            <!-- Post Job (For Company/HR Only) -->
+
                 {% if user.is_authenticated and user.role == 'company' %}
-                <li 
-                {% if 'post-job' in request.path %}
-                  class="nav-item active"
-                {% else %}
-                  class="nav-item"
-                {% endif %}
-                >
-                  <a class="nav-link" href="{% url 'post_job' %}">
-                    <i class="fas fa-plus-circle"></i> POST JOB
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="hrDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    HR Panel
                   </a>
+                  <ul class="dropdown-menu" aria-labelledby="hrDropdown">
+                    <li>
+                      <a class="dropdown-item" href="{% url 'post_job' %}">
+                        <i class="fas fa-plus-circle"></i> Post Job
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'manage_jobs' %}">
+                        <i class="fas fa-tasks"></i> Manage Jobs
+                      </a>
+                    </li>
+                  </ul>
                 </li>
                 {% endif %}
+                
 
 
               <!-- If the user is logged in then display dasboard and logout -->
@@ -77,7 +86,7 @@
                 {% endif %}
                 >
                   <a class="nav-link" href="{% url 'dashboard' %}" style="text-transform: uppercase;">
-                    WELCOME {{user.first_name}} (DASHBOARD)</a>
+                     {{user.first_name}} (DASHBOARD)</a>
                 </li>
     
                 <li class="nav-item">

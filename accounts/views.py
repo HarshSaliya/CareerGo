@@ -64,7 +64,7 @@ def logout(request):
 
 @login_required()
 def dashboard(request):
-    user_applications = Application.objects.order_by('-contact_date').filter(user_id=request.user.id)
+    user_applications = Application.objects.order_by('-created_at').filter(applicant=request.user)
     
     context = {
         'applications': user_applications

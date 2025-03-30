@@ -1,19 +1,30 @@
 from django.db import models
-from datetime import datetime
+from django.conf import settings
 from jobs.models import Job
 
 class Application(models.Model):
-  
-  job = models.CharField(max_length=100)
-  job_id = models.IntegerField()
-  creator = models.CharField(max_length=200)
-  creator_id = models.IntegerField()
-  name = models.CharField(max_length=100)
-  email = models.CharField(max_length=100)
-  phone = models.CharField(max_length=100)
-  resume = models.FileField(upload_to='doc', blank=True)
-  contact_date = models.DateTimeField(default=datetime.now, blank=True)
-  user_id = models.IntegerField(blank=True)
-  # Main field to be displayed 
-  def __str__(self):
-    return self.name
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
+    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="applications")
+    
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    cover_letter = models.TextField(blank=True, null=True)
+    portfolio_url = models.URLField(blank=True, null=True)
+    linkedin_profile = models.URLField(blank=True, null=True)
+    github_profile = models.URLField(blank=True, null=True)
+    expected_salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    available_start_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    STATUS_CHOICES = [
+        ('P', 'Pending'),
+        ('R', 'Reviewed'),
+        ('A', 'Accepted'),
+        ('RJ', 'Rejected'),
+    ]
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='P')
+
+    def __str__(self):
+        return f"{self.name} - {self.job.title}"

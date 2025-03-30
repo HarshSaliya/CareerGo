@@ -84,7 +84,6 @@ def applyjob(request,job_id):
 
 
 
-
 @login_required
 def post_job(request):
     # Check if the logged-in user is a company
@@ -105,5 +104,118 @@ def post_job(request):
         return redirect('dashboard')
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Job
+from applications.models import Application
+from .forms import JobForm
+
+@login_required
+def manage_jobs(request):
+    """HR Dashboard to manage posted jobs and applications."""
+    if request.user.role != 'company':
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('dashboard')
+    
+    jobs = Job.objects.filter(creator=request.user)
+    
+    # Filtering options
+    job_title = request.GET.get('title')
+    location = request.GET.get('location')
+    contract = request.GET.get('contract')
+    
+    if job_title:
+        jobs = jobs.filter(title__icontains=job_title)
+    if location:
+        jobs = jobs.filter(location=location)
+    if contract:
+        jobs = jobs.filter(contract=contract)
+    
+    return render(request, 'jobs/manage_jobs.html', {'jobs': jobs})
 
 
+@login_required
+def job_applications(request, job_id):
+    """View applications for a specific job."""
+    job = get_object_or_404(Job, id=job_id, creator=request.user)
+    applications = Application.objects.filter(job=job)
+    
+    # Filtering applications
+    status = request.GET.get('status')
+    if status:
+        applications = applications.filter(status=status)
+    
+    return render(request, 'jobs/job_applications.html', {'job': job, 'applications': applications})
+
+
+@login_required
+def edit_job(request, job_id):
+    """Edit an existing job posting."""
+    job = get_object_or_404(Job, id=job_id, creator=request.user)
+    
+    if request.method == 'POST':
+        form = JobForm(request.POST, request.FILES, instance=job)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Job updated successfully!')
+            return redirect('manage_jobs')
+    else:
+        form = JobForm(instance=job)
+    
+    return render(request, 'jobs/edit_job.html', {'form': form, 'job': job})
+
+
+@login_required
+def delete_job(request, job_id):
+    """Delete a job posting."""
+    job = get_object_or_404(Job, id=job_id, creator=request.user)
+    job.delete()
+    messages.success(request, 'Job deleted successfully!')
+    return redirect('manage_jobs')
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from jobs.models import Job
+from applications.models import Application
+
+@login_required
+def job_applications(request, job_id):
+    job = get_object_or_404(Job, id=job_id, creator=request.user)  # Ensure HR can only view their jobs
+    applications = Application.objects.filter(job=job)  # Get all applications for this job
+
+    # Optional: Filter by status (Pending, Reviewed, Accepted, Rejected)
+    status_filter = request.GET.get('status')
+    if status_filter in dict(Application.STATUS_CHOICES):
+        applications = applications.filter(status=status_filter)
+        
+     # ✅ Pagination (10 applications per page)
+    paginator = Paginator(applications, 10)  # Show 10 applications per page
+    page_number = request.GET.get('page')
+    applications_page = paginator.get_page(page_number)  # Get paginated applications
+
+
+    return render(request, 'jobs/job_applications.html', {
+        'job': job,
+        'applications': applications,
+        'applications': applications_page,
+        'status_filter': status_filter
+    })
+
+@login_required
+def update_application_status(request, application_id):
+    application = get_object_or_404(Application, id=application_id, job__creator=request.user)  # Only HRs who posted the job
+
+    if request.method == "POST":
+        new_status = request.POST.get('status')
+        if new_status in dict(Application.STATUS_CHOICES):
+            application.status = new_status
+            application.save()
+            messages.success(request, "Application status updated successfully!")
+        else:
+            messages.error(request, "Invalid status selected.")
+        return redirect('job_applications', job_id=application.job.id)
+
+    return render(request, 'jobs/application_detail.html', {'application': application})

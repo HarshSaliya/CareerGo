@@ -3,55 +3,99 @@
 
 {% load static %}
 
-
 {% block content %}
+<div class="container py-5">
+  <h1 class="text-center py-4">Apply for {{ job.title }}</h1>
 
-<div class="py-5 px-5 centered">
-  <h1 class="text-center py-5">Application Form</h1>
-<div class="form-group d-flex align-items-center justify-content-center">
-  <form action="{% url 'application' %}" method="POST" enctype="multipart/form-data" class="col-md-6 col-md-offset-6"> 
-    {% csrf_token %}
-    {% if user.is_authenticated %}
-      <input type="hidden" name="user_id" value="{{ user.id }}">
-    {% endif %}
-    <input type="hidden" name="job_id" value="{{ job.id }}">
-    <input type="hidden" name="creator" value="{{ job.creator }}">
-    <input type="hidden" name="creator_id" value="{{ job.creator.id }}"> 
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form action="{% url 'application' %}" method="POST" enctype="multipart/form-data" class="p-4 border rounded bg-light">
+        {% csrf_token %}
+        
+        <!-- Hidden Fields -->
+        {% if user.is_authenticated %}
+          <input type="hidden" name="user_id" value="{{ user.id }}">
+        {% endif %}
+        <input type="hidden" name="job_id" value="{{ job.id }}">
 
+        <!-- Job Title (Readonly) -->
+        <div class="form-group">
+          <label for="job_name" class="col-form-label">Job Title:</label>
+          <input type="text" name="job" class="form-control" value="{{ job.title }}" readonly>
+        </div>
 
-    <div class="form-group">
-      <label for="job_name" class="col-form-label">Job Title:</label>
-      <input type="text" name="job" class="form-control" value="{{ job.title }}">
+        <!-- Name -->
+        <div class="form-group">
+          <label for="name" class="col-form-label">Full Name:</label>
+          <input type="text" name="name" class="form-control" 
+            {% if user.is_authenticated %}
+              value="{{ user.first_name }} {{ user.last_name }}"
+            {% endif %}
+            required>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email" class="col-form-label">Email:</label>
+          <input type="email" name="email" class="form-control" 
+            {% if user.is_authenticated %}
+              value="{{ user.email }}"
+            {% endif %}
+            required>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label for="phone" class="col-form-label">Phone:</label>
+          <input type="text" name="phone" class="form-control" placeholder="Enter your phone number" required>
+        </div>
+
+        <!-- Resume Upload -->
+        <div class="form-group">
+          <label for="resume" class="col-form-label">Upload CV (PDF/DOCX)</label>
+          <input type="file" name="resume" class="form-control-file" id="file" accept=".pdf,.doc,.docx" required>
+        </div>
+
+        <!-- Cover Letter -->
+        <div class="form-group">
+          <label for="cover_letter" class="col-form-label">Cover Letter:</label>
+          <textarea name="cover_letter" class="form-control" rows="4" placeholder="Write a brief cover letter (optional)"></textarea>
+        </div>
+
+        <!-- Portfolio URL -->
+        <div class="form-group">
+          <label for="portfolio_url" class="col-form-label">Portfolio URL (optional):</label>
+          <input type="url" name="portfolio_url" class="form-control" placeholder="https://your-portfolio.com">
+        </div>
+
+        <!-- LinkedIn Profile -->
+        <div class="form-group">
+          <label for="linkedin_profile" class="col-form-label">LinkedIn Profile (optional):</label>
+          <input type="url" name="linkedin_profile" class="form-control" placeholder="https://linkedin.com/in/yourname">
+        </div>
+
+        <!-- GitHub Profile -->
+        <div class="form-group">
+          <label for="github_profile" class="col-form-label">GitHub Profile (optional):</label>
+          <input type="url" name="github_profile" class="form-control" placeholder="https://github.com/yourusername">
+        </div>
+
+        <!-- Expected Salary -->
+        <div class="form-group">
+          <label for="expected_salary" class="col-form-label">Expected Salary (optional):</label>
+          <input type="number" name="expected_salary" class="form-control" placeholder="Enter expected salary">
+        </div>
+
+        <!-- Available Start Date -->
+        <div class="form-group">
+          <label for="available_start_date" class="col-form-label">Available Start Date:</label>
+          <input type="date" name="available_start_date" class="form-control">
+        </div>
+
+        <hr>
+        <button type="submit" class="btn btn-primary btn-block">Submit Application</button>
+      </form>
     </div>
-    <div class="form-group">
-      <label for="name" class="col-form-label">Name:</label>
-      <input type="text" name="name" class="form-control"
-      {% if user.is_authenticated %}
-        value="{{user.first_name}} {{user.last_name}}"
-      {% endif %}
-      required>
-    </div>
-    <div class="form-group">
-      <label for="email" class="col-form-label">Email:</label>
-      <input type="email" name="email" class="form-control" 
-      {% if user.is_authenticated %}
-        value="{{user.email}}"
-      {% endif %}
-      required>
-    </div>
-    <div class="form-group">
-      <label for="phone" class="col-form-label">Phone:</label>
-      <input type="text" name="phone" class="form-control">
-    </div>    
-
-    <div class="form-group">
-        <label for="resume" class="col-form-label">Upload CV</label>
-        <input type="file" name="resume" class="form-control-file" id="file" required>
-      </div>
-      <hr>
-      <input type="submit" value="Submit" class="btn btn-block btn-secondary">
-    </form>
+  </div>
 </div>
-</div>
-
 {% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %}Job Applications - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <!-- Page Header -->
+  <h2 class="mb-4 text-center">Applications for "{{ job.title }}"</h2>
+
+  <!-- Filter Section -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="GET" class="row g-3 align-items-center">
+        <div class="col-sm-4">
+            <br>
+        
+
+          <label for="status" class="form-label">Filter by Status:</label>
+          <select name="status" id="status" class="form-select">
+            <option value="" {% if not status_filter %}selected{% endif %}>All</option>
+            <option value="P" {% if status_filter == 'P' %}selected{% endif %}>Pending</option>
+            <option value="R" {% if status_filter == 'R' %}selected{% endif %}>Reviewed</option>
+            <option value="A" {% if status_filter == 'A' %}selected{% endif %}>Accepted</option>
+            <option value="RJ" {% if status_filter == 'RJ' %}selected{% endif %}>Rejected</option>
+          </select>
+        </div>
+        <div class="col-sm-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary">Apply Filter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Applications Cards Grid -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for application in applications %}
+    <div class="col">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">{{ application.name }}</h5>
+          <p class="card-text"><small class="text-muted">{{ application.email }} | {{ application.phone }}</small></p>
+          <p class="card-text"><strong>Expected Salary:</strong> {{ application.expected_salary|default:"N/A" }}</p>
+          <p class="card-text"><strong>Start Date:</strong> {{ application.available_start_date|default:"N/A" }}</p>
+          <p class="card-text"><strong>Cover Letter:</strong> {{ application.cover_letter|truncatewords:15|default:"N/A" }}</p>
+          <!-- Action Links --> 
+          <div class="mb-2">
+            {% if application.resume %}
+            <a href="{{ application.resume.url }}" target="_blank" class="btn btn-outline-secondary btn-sm me-1">Resume</a>
+            {% endif %}
+            {% if application.linkedin_profile %}
+            <a href="{{ application.linkedin_profile }}" target="_blank" class="btn btn-outline-primary btn-sm me-1">LinkedIn</a>
+            {% endif %}
+            {% if application.github_profile %}
+            <a href="{{ application.github_profile }}" target="_blank" class="btn btn-outline-dark btn-sm me-1">GitHub</a>
+            {% endif %}
+            {% if application.portfolio_url %}
+            <a href="{{ application.portfolio_url }}" target="_blank" class="btn btn-outline-success btn-sm">Portfolio</a>
+            {% endif %}
+          </div>
+          <!-- Status Badge --> 
+          <div class="mb-3">
+            <span class="badge {% if application.status == 'P' %}bg-warning{% elif application.status == 'R' %}bg-info{% elif application.status == 'A' %}bg-success{% else %}bg-danger{% endif %}">
+              {{ application.get_status_display }}
+            </span>
+          </div>
+          <!-- Update Status Form --> 
+          <form method="POST" action="{% url 'update_application_status' application.id %}" class="d-flex align-items-center gap-2">
+            {% csrf_token %}
+            <select name="status" class="form-select form-select-sm w-auto">
+              <option value="P" {% if application.status == 'P' %}selected{% endif %}>Pending</option>
+              <option value="R" {% if application.status == 'R' %}selected{% endif %}>Reviewed</option>
+              <option value="A" {% if application.status == 'A' %}selected{% endif %}>Accepted</option>
+              <option value="RJ" {% if application.status == 'RJ' %}selected{% endif %}>Rejected</option>
+            </select>
+            <button type="submit" class="btn btn-success btn-sm">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <p class="text-center text-muted">No applications found.</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination Section -->
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if applications.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1&status={{ status_filter }}">First</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ applications.previous_page_number }}&status={{ status_filter }}">Previous</a>
+      </li>
+      {% endif %}
+      <li class="page-item disabled">
+        <span class="page-link">Page {{ applications.number }} of {{ applications.paginator.num_pages }}</span>
+      </li>
+      {% if applications.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ applications.next_page_number }}&status={{ status_filter }}">Next</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ applications.paginator.num_pages }}&status={{ status_filter }}">Last</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endblock %}
