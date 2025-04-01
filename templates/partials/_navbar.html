@@ -28,9 +28,24 @@
               class="nav-item"
             {% endif %}
             >
-                <a class="nav-link" href="{% url 'home' %}">ATS RESUME</a>
+                <a class="nav-link" href="{% url 'home' %}">RESUME</a>
             </li>
             
+            <li 
+            {% if 'plans' == request.path %}
+              class="nav-item active"
+            {% else %}
+              class="nav-item"
+            {% endif %}
+            >
+                <a class="nav-link" href="{% url 'plan_list' %}">PLANS</a>
+            </li>
+
+            
+            
+            
+            
+
 
             <li 
             {% if 'about' in request.path %}

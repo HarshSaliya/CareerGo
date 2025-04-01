@@ -64,12 +64,14 @@ def logout(request):
 
 @login_required()
 def dashboard(request):
-    user_applications = Application.objects.order_by('-created_at').filter(applicant=request.user)
+    # user_applications = Application.objects.order_by('-created_at').filter(applicant=request.user)
+    user_applications = Application.objects.filter(applicant=request.user).select_related('job').order_by('-created_at')
     
     context = {
         'applications': user_applications
     }
     return render(request,'accounts/dashboard.html', context)
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required

@@ -19,7 +19,15 @@ def home(request):
 
 @login_required
 def process_resume(request):
+    
+    
     if request.method == "POST":
+        
+        # Check if user has already processed 3 resumes
+        resume_count = Resume.objects.filter(user=request.user).count()
+        if resume_count >= 3:
+            return JsonResponse({"error": "You have reached your free limit of 3 resume checks. Please buy a plan to continue."}, status=403)
+        
         profession = request.POST.get("profession")
         experience_level = request.POST.get("experience_level")
         resume_file = request.FILES.get("resume_file")

@@ -141,7 +141,7 @@
                         feedbackBox.style.backgroundColor = "#e7f5ff";
                         scoreText.innerText = `Resume Score: ${data.score}/100`;
 
-                        let feedbackArray = data.feedback.split("\n"); // Assuming feedback is a paragraph list
+                        let feedbackArray = data.feedback.split("\n");
 
                         feedbackArray.forEach((text, index) => {
                             setTimeout(() => {
@@ -149,10 +149,10 @@
                                 li.innerText = text;
                                 li.style.animationDelay = `${index * 0.5}s`;
                                 feedbackList.appendChild(li);
-                            }, index * 500); // Smooth feedback appearance
+                            }, index * 500);
                         });
                     }
-                }, 5000); // Simulated AI analysis delay
+                }, 5000);
             })
             .catch(error => console.error("Error:", error));
         });
