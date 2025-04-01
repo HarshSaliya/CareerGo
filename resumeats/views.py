@@ -4,6 +4,14 @@ from django.contrib.auth.decorators import login_required
 from .models import Resume
 from .utils import extract_text_from_resume, analyze_resume
 import os
+import uuid
+from decimal import Decimal
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from .models import Plan, Payment, DummyCreditCard
+
+
 
 @login_required
 def home(request):
@@ -48,3 +56,70 @@ def process_resume(request):
         return JsonResponse({"score": score, "feedback": feedback})
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+
+
+
+def plan_list(request):
+    """ Display available plans """
+    plans = Plan.objects.all()
+    return render(request, 'plans.html', {'plans': plans})
+
+@login_required
+def payment_page(request, plan_id):
+    """ Show the payment form for the selected plan """
+    plan = get_object_or_404(Plan, id=plan_id)
+    gst = Decimal(plan.price) * Decimal(0.18)  # 18% GST
+    total_amount = Decimal(plan.price) + gst
+
+    return render(request, 'payment.html', {
+        'plan': plan,
+        'gst': gst,
+        'total_amount': total_amount
+    })
+
+@login_required
+def process_payment(request):
+    """ Process the payment using dummy card details """
+    if request.method == "POST":
+        plan_id = request.POST.get("plan_id")
+        card_number = request.POST.get("card_number")
+        card_holder = request.POST.get("card_holder")
+        expiry_date = request.POST.get("expiry_date")
+        cvv = request.POST.get("cvv")
+
+        # Fetch the plan
+        plan = get_object_or_404(Plan, id=plan_id)
+        gst = Decimal(plan.price) * Decimal(0.18)
+        total_amount = Decimal(plan.price) + gst
+
+        # Validate the card
+        try:
+            card = DummyCreditCard.objects.get(card_number=card_number, card_holder=card_holder, expiry_date=expiry_date, cvv=cvv)
+        except DummyCreditCard.DoesNotExist:
+            return JsonResponse({"status": "failed", "message": "Invalid card details"}, status=400)
+
+        # Check balance
+        if card.balance < total_amount:
+            return JsonResponse({"status": "failed", "message": "Insufficient balance"}, status=400)
+
+        # Deduct the amount
+        card.balance -= total_amount
+        card.save()
+
+        # Create a payment record
+        payment = Payment.objects.create(
+            user=request.user,
+            plan=plan,
+            base_price=plan.price,
+            gst=gst,
+            total_amount=total_amount,
+            status="success",
+            transaction_id=str(uuid.uuid4())  # Unique transaction ID
+        )
+
+        return JsonResponse({"status": "success", "transaction_id": payment.transaction_id, "message": "Payment successful"})
+
+    return JsonResponse({"status": "failed", "message": "Invalid request"}, status=400)
+    

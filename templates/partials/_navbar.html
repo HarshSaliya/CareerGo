@@ -22,6 +22,17 @@
             </li>
 
             <li 
+            {% if 'home' == request.path %}
+              class="nav-item active"
+            {% else %}
+              class="nav-item"
+            {% endif %}
+            >
+                <a class="nav-link" href="{% url 'home' %}">ATS RESUME</a>
+            </li>
+            
+
+            <li 
             {% if 'about' in request.path %}
               class="nav-item active"
             {% else %}
