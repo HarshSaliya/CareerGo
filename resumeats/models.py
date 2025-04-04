@@ -62,9 +62,9 @@ class Plan(models.Model):
 class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
-    base_price = models.DecimalField(max_digits=4, decimal_places=2)  # Plan price
-    gst = models.DecimalField(max_digits=4, decimal_places=2)  # 18% GST
-    total_amount = models.DecimalField(max_digits=4, decimal_places=2)  # Final price
+    base_price = models.DecimalField(max_digits=8, decimal_places=2)  # Plan price
+    gst = models.DecimalField(max_digits=8, decimal_places=2)  # 18% GST
+    total_amount = models.DecimalField(max_digits=8, decimal_places=2)  # Final price
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('success', 'Success'), ('failed', 'Failed')], default='pending')
     transaction_id = models.CharField(max_length=100, unique=True, default=uuid.uuid4)
     created_at = models.DateTimeField(auto_now_add=True)

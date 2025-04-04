@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'applications',
     'contacts',
     'resumeats',
+    'blog',
     
    
     'django.contrib.admin',

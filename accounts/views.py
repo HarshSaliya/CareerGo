@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages, auth
-from accounts.models import User 
-from applications.models import Application
+from accounts.models import User ,Subscriber
+from applications.models import Application 
+
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -126,3 +127,34 @@ def user_profile(request):
         'job_info': job_info,
     }
     return render(request, 'accounts/user_profile.html', context)
+
+
+
+def subscribe(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        
+        # Check if email already exists
+        if Subscriber.objects.filter(email=email).exists():
+            messages.error(request, "This email is already subscribed.")
+        else:
+            Subscriber.objects.create(email=email)
+            messages.success(request, "You have successfully subscribed!")
+
+    return render(request, "index.html")
+
+
+
+def subscribe(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+
+        if Subscriber.objects.filter(email=email).exists():
+            messages.error(request, "You are already subscribed!")
+        else:
+            Subscriber.objects.create(email=email)
+            messages.success(request, "Subscription successful!")
+
+        return redirect("index")  # Redirects back to homepage
+
+    return redirect("index") 

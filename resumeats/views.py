@@ -9,8 +9,9 @@ from decimal import Decimal
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .models import Plan, Payment, DummyCreditCard
-
+from .models import Plan, Payment, DummyCreditCard ,Resume
+from django.utils.timezone import now
+from datetime import timedelta
 
 
 @login_required
@@ -19,13 +20,29 @@ def home(request):
 
 @login_required
 def process_resume(request):
-    
-    
     if request.method == "POST":
-        
-        # Check if user has already processed 3 resumes
+        user = request.user
+
+        # Fetch the latest successful payment
+        latest_payment = Payment.objects.filter(user=user, status="success").order_by('-created_at').first()
+
+        # Determine if the user has an active plan
+        has_active_plan = False
+        if latest_payment:
+            plan_name = latest_payment.plan.name  # Get the plan name (e.g., '6_months')
+            plan_duration = {
+                "3_months": 90,
+                "6_months": 180,
+                "1_year": 365,
+            }.get(plan_name, 0)
+
+            # Check if the plan is still valid
+            if latest_payment.created_at >= now() - timedelta(days=plan_duration):
+                has_active_plan = True
+
+        # ✅ FIX: Only restrict free users, allow paid users to continue  
         resume_count = Resume.objects.filter(user=request.user).count()
-        if resume_count >= 3:
+        if resume_count >= 3 and not has_active_plan:
             return JsonResponse({"error": "You have reached your free limit of 3 resume checks. Please buy a plan to continue."}, status=403)
         
         profession = request.POST.get("profession")

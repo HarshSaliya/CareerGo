@@ -1,32 +1,33 @@
 {% load static %}
-<footer class="footer text-white py-4">
+<footer class="footer text-white py-5">
     <div class="container">
         <div class="row text-center text-md-start">
             <!-- About Section -->
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold text-uppercase">Career <span class="text-primary">GO</span></h5>
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold text-uppercase">Career <span class="text-primary">GO</span></h4>
                 <p class="small">Find your next great role with ease. We connect job seekers with top companies.</p>
             </div>
 
             <!-- Quick Links -->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-4">
                 <h5 class="fw-bold text-uppercase">Quick Links</h5>
                 <ul class="list-unstyled">
-                    <li><a  href="{% url 'index' %}" class="footer-link">HOME</a></li>
+                    <li><a href="{% url 'index' %}" class="footer-link">Home</a></li>
                     <li><a href="{% url 'home' %}" class="footer-link">Resume</a></li>
                     <li><a href="{% url 'jobs' %}" class="footer-link">Jobs</a></li>
                     <li><a href="{% url 'about' %}" class="footer-link">About Us</a></li>
-                    <li><a href="{% url 'contact' %}" class="footer-link">Contact</a></li>
                 </ul>
             </div>
 
             <!-- Social Media -->
-            <div class="col-md-4 mb-3 text-center text-md-end">
+            <div class="col-md-4 mb-4 text-center text-md-end">
                 <h5 class="fw-bold text-uppercase">Follow Us</h5>
-                <a href="#" class="footer-icon"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="footer-icon"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="footer-icon"><i class="fab fa-linkedin"></i></a>
+                <div class="social-icons">
+                    <a href="#" class="footer-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="footer-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="footer-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
             </div>
         </div>
 
@@ -41,32 +42,53 @@
     </div>
 </footer>
 
+<!-- Custom Styling -->
 <style>
     .footer {
-        background-color: #111; /* Matches dark theme */
+        background: linear-gradient(to right, #1f1f1f, #111); /* Gradient Dark Theme */
         color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .footer h4, .footer h5 {
+        color: #ffffff;
     }
 
     .footer-link {
-        color: #bbb;
+        color: #ccc;
         text-decoration: none;
-        transition: color 0.3s;
+        font-size: 14px;
+        display: block;
+        padding: 5px 0;
+        transition: color 0.3s ease-in-out;
     }
 
     .footer-link:hover {
-        color: #a855f7; /* Purple hover effect */
+        color: #ff7b00; /* Stylish orange hover effect */
+        text-decoration: underline;
+    }
+
+    .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
     }
 
     .footer-icon {
-        color: #bbb;
-        font-size: 1.3rem;
-        margin-right: 10px;
-        transition: transform 0.3s ease-in-out, color 0.3s;
+        background: rgba(255, 255, 255, 0.2);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 18px;
+        transition: background 0.3s, transform 0.3s;
     }
 
     .footer-icon:hover {
-        color: #a855f7;
-        transform: scale(1.2);
+        background: #ff7b00;
+        transform: scale(1.1);
     }
 </style>
 
