@@ -37,11 +37,11 @@ class Resume(models.Model):
 
 
 class DummyCreditCard(models.Model):
-    card_number = models.CharField(max_length=16, unique=True)  # 16-digit card number
-    card_holder = models.CharField(max_length=100)  # Name on card
-    expiry_date = models.CharField(max_length=5)  # MM/YY format
-    cvv = models.CharField(max_length=3)  # CVV code
-    balance = models.DecimalField(max_digits=10, decimal_places=2)  # Available balance
+    card_number = models.CharField(max_length=16, unique=True)  
+    card_holder = models.CharField(max_length=100) 
+    expiry_date = models.CharField(max_length=5)  
+    cvv = models.CharField(max_length=3)  
+    balance = models.DecimalField(max_digits=10, decimal_places=2)  
 
     def __str__(self):
         return f"{self.card_holder} - {self.card_number}"

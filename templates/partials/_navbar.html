@@ -21,15 +21,18 @@
                 <a class="nav-link" href="{% url 'index' %}">HOME</a>
             </li>
 
+            {% if user.is_authenticated and user.role != 'company' %}
             <li 
-            {% if 'home' == request.path %}
-              class="nav-item active"
-            {% else %}
-              class="nav-item"
-            {% endif %}
+              {% if 'home' == request.path %}
+                class="nav-item active"
+              {% else %}
+                class="nav-item"
+              {% endif %}
             >
-                <a class="nav-link" href="{% url 'home' %}">RESUME</a>
+              <a class="nav-link" href="{% url 'home' %}">RESUME</a>
             </li>
+          {% endif %}
+
             
             <li 
             {% if 'plans' == request.path %}
@@ -66,17 +69,12 @@
             <a class="nav-link" href="{% url 'jobs' %}">JOBS</a></li>
 
             
-                              <li 
-                  {% if 'profile' in request.path %}
-                    class="nav-item active"
-                  {% else %}
-                    class="nav-item"
-                  {% endif %}
-                  >
-                    <a class="nav-link" href="{% url 'user_profile' %}">
-                      <i class="fas fa-user"></i> Profile
-                    </a>
-                  </li>
+            <li class="nav-item {% if 'profile' in request.path %} active {% endif %}">
+              <a class="nav-link d-flex align-items-center" href="{% url 'user_profile' %}">
+                  <i class="fas fa-user me-2"></i> <span>Profile</span>
+              </a>
+          </li>
+          
 
 
 
@@ -103,7 +101,7 @@
 
 
               <!-- If the user is logged in then display dasboard and logout -->
-              {% if user.is_authenticated %}
+              {% if user.is_authenticated and user.role != 'company' %}
                 <li 
                 {% if 'dashboard' in request.path %}
                   class="nav-item active"

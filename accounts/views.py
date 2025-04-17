@@ -158,3 +158,88 @@ def subscribe(request):
         return redirect("index")  # Redirects back to homepage
 
     return redirect("index") 
+
+
+
+# from django.shortcuts import render
+# from django.contrib import messages
+
+# def forgot_password_view(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         # Later we'll add logic to send email
+#         messages.success(request, 'If this email exists, a reset link will be sent.')
+#         return render(request, 'forgot_password.html')
+    
+#     return render(request, 'accounts/forgot_password.html')
+
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from django.contrib.auth import get_user_model
+from .utils import account_activation_token
+
+
+User = get_user_model()
+
+def forgot_password_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = account_activation_token.make_token(user)
+            # reset_link = request.build_absolute_uri(f'/reset-password/{uid}/{token}/')
+            reset_link = request.build_absolute_uri(f'/accounts/reset-password/{uid}/{token}/')
+
+
+            subject = 'Reset Your Password'
+            html_message = render_to_string('accounts/reset_password_email.html', {
+                'user': user,
+                'reset_link': reset_link
+            })
+
+            send_mail(subject, '', 'youremail@gmail.com', [email], html_message=html_message)
+            messages.success(request, 'Password reset link has been sent to your email.')
+
+        except User.DoesNotExist:
+            messages.error(request, 'This email is not registered.')
+            
+    return render(request, 'accounts/forgot_password.html')
+
+
+
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
+from .utils import account_activation_token
+from django.http import HttpResponse
+
+
+User = get_user_model()
+
+def reset_password_view(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        if request.method == 'POST':
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+
+            if password == confirm_password:
+                user.password = make_password(password)
+                user.save()
+                messages.success(request, "Password reset successful. You can now log in.")
+                return redirect('login')
+            else:
+                messages.error(request, "Passwords do not match.")
+
+        return render(request, 'accounts/reset_password_form.html')
+    else:
+        return HttpResponse('Invalid or expired link')

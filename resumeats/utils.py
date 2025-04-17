@@ -72,17 +72,17 @@ def analyze_resume(text, profession, experience_level):
     feedback = []
     score = 100
 
-    # ✅ **New Check: Verify if it's actually a resume**
+
     if not any(section in text_lower for section in ESSENTIAL_SECTIONS):
         return 0, "This does not seem to be a resume. Ensure it includes sections like Education, Experience, Skills, and Projects."
 
-    # 1️⃣ **Check for Essential Sections**
+
     missing_sections = [sec.capitalize() for sec in ESSENTIAL_SECTIONS if sec not in text_lower]
     if missing_sections:
         feedback.append(f"Missing sections: {', '.join(missing_sections)}.")
         score -= 12
 
-    # 2️⃣ **Check for Common Resume Keywords**
+  
     missing_common = [word.capitalize() for word in COMMON_KEYWORDS if word not in text_lower]
     if missing_common:
         feedback.append(f"Consider adding: {', '.join(missing_common)}.")
