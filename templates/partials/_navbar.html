@@ -101,41 +101,45 @@
 
 
               <!-- If the user is logged in then display dasboard and logout -->
-              {% if user.is_authenticated and user.role != 'company' %}
-                <li 
-                {% if 'dashboard' in request.path %}
-                  class="nav-item active"
-                {% else %}
-                  class="nav-item"
-                {% endif %}
-                >
-                  <a class="nav-link" href="{% url 'dashboard' %}" style="text-transform: uppercase;">
-                     {{user.first_name}} (DASHBOARD)</a>
-                </li>
-    
-                <li class="nav-item">
-                  <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
-                    <i class="fas fa-sign-out-alt"></i> LOGOUT
-                  </a>
-                  <form action="{% url 'logout' %}" method="POST" id="logout">
-                    {% csrf_token %}
-                    <input type="hidden">
-                  </form>
-                </li>
-              {% else %}
-                <li 
-                {% if 'login' in request.path %}
-                  class="nav-item active"
-                {% else %}
-                  class="nav-item"
-                {% endif %}
-                >
-                  <a class="nav-link" href="{% url 'login' %}">
-                    <i class="fas fa-sign-in-alt"></i>
-    
-                    LOGIN</a>
-                </li> 
-              {% endif %}
+              {% if user.is_authenticated %}
+  {% if user.role != 'company' %}
+    <li 
+      {% if 'dashboard' in request.path %}
+        class="nav-item active"
+      {% else %}
+        class="nav-item"
+      {% endif %}
+    >
+      <a class="nav-link" href="{% url 'dashboard' %}" style="text-transform: uppercase;">
+        {{ user.first_name }} (DASHBOARD)
+      </a>
+    </li>
+  {% endif %}
+
+  <li class="nav-item">
+    <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
+      <i class="fas fa-sign-out-alt"></i> LOGOUT
+    </a>
+    <form action="{% url 'logout' %}" method="POST" id="logout">
+      {% csrf_token %}
+      <input type="hidden">
+    </form>
+  </li>
+
+{% else %}
+  <li 
+    {% if 'login' in request.path %}
+      class="nav-item active"
+    {% else %}
+      class="nav-item"
+    {% endif %}
+  >
+    <a class="nav-link" href="{% url 'login' %}">
+      <i class="fas fa-sign-in-alt"></i> LOGIN
+    </a>
+  </li>
+{% endif %}
+
            
 
         </ul>

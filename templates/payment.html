@@ -1,5 +1,5 @@
-{% extends 'base.html' %}
-{% block title %} About Us {% endblock %}
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+{% comment %} {% block title %} Payment {% endblock %} {% endcomment %}
 {% block content %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,9 +49,10 @@
         <p class="text-muted">Securely complete your payment below.</p>
 
         <div class="bg-gray-100 p-3 rounded mb-4">
-            <p class="text-lg"><strong>Base Price:</strong> ₹{{ plan.price }}</p>
-            <p class="text-lg"><strong>GST (18%):</strong> ₹{{ gst }}</p>
-            <p class="text-lg font-bold text-primary"><strong>Total Amount:</strong> ₹{{ total_amount }}</p>
+            <p class="text-lg"><strong>Base Price:</strong> ₹{{ plan.price|floatformat:2 }}</p>
+            <p class="text-lg"><strong>GST (18%):</strong> ₹{{ gst|floatformat:2 }}</p>
+            <p class="text-lg font-bold text-primary"><strong>Total Amount:</strong> ₹{{ total_amount|floatformat:2 }}</p>
+
         </div>
 
         <form id="paymentForm" class="space-y-3">

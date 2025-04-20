@@ -47,8 +47,16 @@
         <!-- Phone -->
         <div class="form-group">
           <label for="phone" class="col-form-label">Phone:</label>
-          <input type="text" name="phone" class="form-control" placeholder="Enter your phone number" required>
+          <input type="tel" 
+                 name="phone" 
+                 class="form-control" 
+                 placeholder="Enter your phone number"
+                 maxlength="13" 
+                 minlength="10" 
+                 title="Phone number must be 10 digits and start with 6, 7, 8, or 9" 
+                 required>
         </div>
+        
 
         <!-- Resume Upload -->
         <div class="form-group">
@@ -81,15 +89,23 @@
         </div>
 
         <!-- Expected Salary -->
+        <!-- Expected Salary -->
         <div class="form-group">
           <label for="expected_salary" class="col-form-label">Expected Salary (optional):</label>
-          <input type="number" name="expected_salary" class="form-control" placeholder="Enter expected salary">
+          <input type="number" 
+                name="expected_salary" 
+                class="form-control" 
+                placeholder="Enter expected salary"
+                min="0" 
+                step="1000"
+                title="Salary must be a positive number (e.g., 30000)">
         </div>
+
 
         <!-- Available Start Date -->
         <div class="form-group">
           <label for="available_start_date" class="col-form-label">Available Start Date:</label>
-          <input type="date" name="available_start_date" class="form-control">
+          <input type="date" name="available_start_date" class="form-control" required  >
         </div>
 
         <hr>

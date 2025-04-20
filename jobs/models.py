@@ -13,6 +13,24 @@ LOCATION = (
     ('Bangalore','Bangalore'),
     ('Pune','Pune'),
     ('Remote','Remote'),
+    ('Hyderabad', 'Hyderabad'),
+    ('Chennai', 'Chennai'),
+    ('New Delhi', 'New Delhi'),
+    ('Gurugram', 'Gurugram'),
+    ('Noida', 'Noida'),
+    ('Ghaziabad', 'Ghaziabad'),
+    ('Faridabad', 'Faridabad'),
+    ('Kolkata', 'Kolkata'),
+    ('Ahmedabad', 'Ahmedabad'),
+    ('Lucknow', 'Lucknow'),
+    ('Jaipur', 'Jaipur'),
+    ('Chandigarh', 'Chandigarh'),
+    ('Vijayawada', 'Vijayawada'),
+    ('Thiruvananthapuram', 'Thiruvananthapuram'),
+    ('Bhubaneswar', 'Bhubaneswar'),
+    ('Visakhapatnam', 'Visakhapatnam'),
+    ('Indore', 'Indore'),
+    ('Vadodara', 'Vadodara'),
 )
 
 
@@ -33,6 +51,7 @@ class Job(models.Model):
     salary = models.IntegerField()
     deadline = models.DateTimeField()
     main_image = models.ImageField(upload_to='photos/%Y/%m%d/')
+    created_at = models.DateTimeField(auto_now=True)
 
     # Function to return main field which we are considering to be title
     def __str__(self):

@@ -2,24 +2,21 @@
 {% block title %}Job Applications - {{ job.title }}{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<br>
+<br>
+<br>
+
+<div class="container py-5">
   <!-- Page Header -->
-  <h2 class="mb-4 text-center">Applications for "{{ job.title }}"</h2>
+  <h2 class="text-center mb-4 fw-semibold">Applications for “{{ job.title }}”</h2>
 
   <!-- Filter Section -->
-  <div class="card mb-4">
+  <div class="card mb-4 shadow-sm border-0 rounded-4">
     <div class="card-body">
-      <form method="GET" class="row g-3 align-items-center">
-        <div class="col-sm-4">
-            <br>
-            <br>
-            <br>
-            <br>
-
-        
-
-          <label for="status" class="form-label">Filter by Status:</label>
-          <select name="status" id="status" class="form-select">
+      <form method="GET" class="row gy-3 gx-4 align-items-end">
+        <div class="col-md-4">
+          <label for="status" class="form-label fw-semibold">Application Status</label>
+          <select name="status" id="status" class="form-select rounded-pill">
             <option value="" {% if not status_filter %}selected{% endif %}>All</option>
             <option value="P" {% if status_filter == 'P' %}selected{% endif %}>Pending</option>
             <option value="R" {% if status_filter == 'R' %}selected{% endif %}>Reviewed</option>
@@ -27,56 +24,64 @@
             <option value="RJ" {% if status_filter == 'RJ' %}selected{% endif %}>Rejected</option>
           </select>
         </div>
-    
-        <div class="col-sm-2 d-flex align-items-end">
-          <button type="submit" class="btn btn-primary">Apply Filter</button>
+
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100 rounded-pill fw-semibold">
+            <i class="fas fa-filter me-1"></i> Apply Filter
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Applications Cards Grid -->
+  <!-- Applications Grid -->
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for application in applications %}
     <div class="col">
-      <div class="card h-100 shadow-sm border-0">
+      <div class="card h-100 shadow-sm border-0 rounded-4">
         <div class="card-body">
           <h5 class="card-title">{{ application.name }}</h5>
-          <p class="card-text"><small class="text-muted">{{ application.email }} | {{ application.phone }}</small></p>
+          <p class="card-text text-muted small">{{ application.email }} | {{ application.phone }}</p>
           <p class="card-text"><strong>Expected Salary:</strong> {{ application.expected_salary|default:"N/A" }}</p>
           <p class="card-text"><strong>Start Date:</strong> {{ application.available_start_date|default:"N/A" }}</p>
           <p class="card-text"><strong>Cover Letter:</strong> {{ application.cover_letter|truncatewords:15|default:"N/A" }}</p>
-          <!-- Action Links --> 
-          <div class="mb-2">
+
+          <!-- Links -->
+          <div class="mb-3">
             {% if application.resume %}
-            <a href="{{ application.resume.url }}" target="_blank" class="btn btn-outline-secondary btn-sm me-1">Resume</a>
+            <a href="{{ application.resume.url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill me-1">Resume</a>
             {% endif %}
             {% if application.linkedin_profile %}
-            <a href="{{ application.linkedin_profile }}" target="_blank" class="btn btn-outline-primary btn-sm me-1">LinkedIn</a>
+            <a href="{{ application.linkedin_profile }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill me-1">LinkedIn</a>
             {% endif %}
             {% if application.github_profile %}
-            <a href="{{ application.github_profile }}" target="_blank" class="btn btn-outline-dark btn-sm me-1">GitHub</a>
+            <a href="{{ application.github_profile }}" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill me-1">GitHub</a>
             {% endif %}
             {% if application.portfolio_url %}
-            <a href="{{ application.portfolio_url }}" target="_blank" class="btn btn-outline-success btn-sm">Portfolio</a>
+            <a href="{{ application.portfolio_url }}" target="_blank" class="btn btn-outline-success btn-sm rounded-pill">Portfolio</a>
             {% endif %}
           </div>
-          <!-- Status Badge --> 
+
+          <!-- Status Badge -->
           <div class="mb-3">
-            <span class="badge {% if application.status == 'P' %}bg-warning{% elif application.status == 'R' %}bg-info{% elif application.status == 'A' %}bg-success{% else %}bg-danger{% endif %}">
+            <span class="badge px-3 py-2 {% if application.status == 'P' %}bg-warning text-dark
+              {% elif application.status == 'R' %}bg-info
+              {% elif application.status == 'A' %}bg-success
+              {% else %}bg-danger{% endif %}">
               {{ application.get_status_display }}
             </span>
           </div>
-          <!-- Update Status Form --> 
+
+          <!-- Update Form -->
           <form method="POST" action="{% url 'update_application_status' application.id %}" class="d-flex align-items-center gap-2">
             {% csrf_token %}
-            <select name="status" class="form-select form-select-sm w-auto">
+            <select name="status" class="form-select form-select-sm rounded-pill w-auto">
               <option value="P" {% if application.status == 'P' %}selected{% endif %}>Pending</option>
               <option value="R" {% if application.status == 'R' %}selected{% endif %}>Reviewed</option>
               <option value="A" {% if application.status == 'A' %}selected{% endif %}>Accepted</option>
               <option value="RJ" {% if application.status == 'RJ' %}selected{% endif %}>Rejected</option>
             </select>
-            <button type="submit" class="btn btn-success btn-sm">Update</button>
+            <button type="submit" class="btn btn-success btn-sm rounded-pill">Update</button>
           </form>
         </div>
       </div>
@@ -88,8 +93,9 @@
     {% endfor %}
   </div>
 
-  <!-- Pagination Section -->
-  <nav aria-label="Page navigation" class="mt-4">
+  <!-- Pagination -->
+  {% if applications.has_other_pages %}
+  <nav class="mt-5" aria-label="Page navigation">
     <ul class="pagination justify-content-center">
       {% if applications.has_previous %}
       <li class="page-item">
@@ -112,5 +118,6 @@
       {% endif %}
     </ul>
   </nav>
+  {% endif %}
 </div>
 {% endblock %}

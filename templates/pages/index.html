@@ -66,37 +66,43 @@
     </div>
   </div>
 
-{% if jobs %}
-
-  {% for job in jobs %}
-    <div class="col-md-4">
-    <div class="product-item">
-    <a href="{% url 'job' job.id %}"><img src="{{ job.main_image.url }}" alt=""></a>
-    <div class="down-content">
-    <a href="{% url 'job' job.id %}"><h4> {{job.title}}</h4></a>
-    <h6>${{job.salary | intcomma}}</h6>
-    <h4><small><i class="fa fa-briefcase"></i> {{job.role}}<br> <strong><i class="fa fa-building"></i>  {{job.company}}</strong></small></h4>
-    <small>
-    <strong title="Posted on"><i class="fa fa-calendar"></i> Apply by {{job.deadline | date:"F d Y" }}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-    <br>
-    <strong title="Type"><i class="fa fa-file"></i> {{job.contract}}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-    <br>
-    <strong title="Location"><i class="fa fa-map-marker"></i> {{job.location}}</strong>
-    </small>
+  <div class="container py-4">
+    <div class="row g-4">
+      {% if jobs %}
+        {% for job in jobs %}
+          <div class="col-md-6 col-lg-4 d-flex">
+            <div class="card shadow-lg w-100 border-0 rounded-4 d-flex flex-column">
+              <a href="{% url 'job' job.id %}">
+                <img src="{{ job.main_image.url }}" alt="" class="card-img-top rounded-top-4" style="height: 220px; object-fit: cover;">
+              </a>
+              <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                  <a href="{% url 'job' job.id %}" class="text-decoration-none">
+                    <h5 class="card-title fw-bold mb-2"> {{ job.title }}</h5>
+                  </a>
+                  <h6 class="text-success mb-3"> {{ job.salary | intcomma }}</h6>
+                  <p class="mb-2 text-muted">
+                    <i class="fa fa-briefcase me-1"></i> {{ job.role }}<br>
+                    <i class="fa fa-building me-1"></i><strong> {{ job.company }}</strong>
+                  </p>
+                </div>
+                <div class="mt-auto">
+                  <p class="mb-1"><i class="fa fa-calendar me-1"></i><strong> Apply by:</strong> {{ job.deadline|date:"F d, Y" }}</p>
+                  <p class="mb-1"><i class="fa fa-file me-1"></i> {{ job.contract }}</p>
+                  <p><i class="fa fa-map-marker me-1"></i> {{ job.location }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <div class="alert alert-warning text-center">No jobs found!</div>
+        </div>
+      {% endif %}
     </div>
-    </div>
-    </div>
-  {% endfor %}
-
-{% else %}
-  <div class="col-md-12">
-    <p>No jobs found!</p>
   </div>
-{% endif %}
-</div>
-</div>
-</div>
-
+  
 
 <div class="services" style="background-image: url(https://images.unsplash.com/photo-1533090161767-e6ffed986c88?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80);" >
 <div class="best-features">

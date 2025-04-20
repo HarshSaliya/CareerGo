@@ -13,7 +13,7 @@
                     <h4><i class="fas fa-briefcase"></i> Post  New Job</h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    <form method="POST" enctype="multipart/form-data" class="needs-validation" >
                         {% csrf_token %}
 
                         <!-- Company Name -->
@@ -35,16 +35,35 @@
                         </div>
 
                         <!-- Location -->
-                        <div class="mb-3">
-                            <label for="id_location" class="form-label">Location</label>
-                            <select name="location" id="id_location" class="form-select" required>
-                                <option value="" selected disabled>Select Location</option>
-                                <option value="Mumbai">Mumbai</option>
-                                <option value="Bangalore">Bangalore</option>
-                                <option value="Pune">Pune</option>
-                                <option value="Remote">Remote</option>
-                            </select>
-                        </div>
+                        <!-- Location -->
+<div class="mb-3">
+  <label for="id_location" class="form-label">Location</label>
+  <select name="location" id="id_location" class="form-select" required>
+    <option value="" selected disabled>Select Location</option>
+    <option value="Mumbai">Mumbai</option>
+    <option value="Bangalore">Bangalore</option>
+    <option value="Pune">Pune</option>
+    <option value="Remote">Remote</option>
+    <option value="Hyderabad">Hyderabad</option>
+    <option value="Chennai">Chennai</option>
+    <option value="New Delhi">New Delhi</option>
+    <option value="Gurugram">Gurugram</option>
+    <option value="Noida">Noida</option>
+    <option value="Ghaziabad">Ghaziabad</option>
+    <option value="Faridabad">Faridabad</option>
+    <option value="Kolkata">Kolkata</option>
+    <option value="Ahmedabad">Ahmedabad</option>
+    <option value="Lucknow">Lucknow</option>
+    <option value="Jaipur">Jaipur</option>
+    <option value="Chandigarh">Chandigarh</option>
+    <option value="Vijayawada">Vijayawada</option>
+    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+    <option value="Bhubaneswar">Bhubaneswar</option>
+    <option value="Visakhapatnam">Visakhapatnam</option>
+    <option value="Indore">Indore</option>
+    <option value="Vadodara">Vadodara</option>
+  </select>
+</div>
 
                         <!-- Job Description -->
                         <div class="mb-3">
@@ -72,8 +91,17 @@
                         <!-- Vacancy -->
                         <div class="mb-3">
                             <label for="id_vacancy" class="form-label">Number of Vacancies</label>
-                            <input type="number" name="vacancy" class="form-control" id="id_vacancy" placeholder="Enter number of vacancies" required>
+                            <input type="number" 
+                                   name="vacancy" 
+                                   class="form-control" 
+                                   id="id_vacancy" 
+                                   placeholder="Enter number of vacancies" 
+                                   pattern="\d+" 
+                                   min="1"
+                                   title="Please enter a valid number greater than 0"
+                                   required>
                         </div>
+                        
 
                         <!-- Experience Required -->
                         <div class="mb-3">

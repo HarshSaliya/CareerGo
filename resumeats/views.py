@@ -118,6 +118,9 @@ def process_payment(request):
         plan = get_object_or_404(Plan, id=plan_id)
         gst = Decimal(plan.price) * Decimal(0.18)
         total_amount = Decimal(plan.price) + gst
+        
+        gst = gst.quantize(Decimal('0.01'))
+        total_amount = total_amount.quantize(Decimal('0.01'))
 
         # Validate the card
         try:

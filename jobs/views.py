@@ -5,19 +5,20 @@ from .models import Job
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-
+from .models import LOCATION
 # views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Job
 from .forms import JobForm
-
+from django.contrib import messages
+from django.utils import timezone   
 
 def index(request):
-    jobs = Job.objects.order_by('-job_date').filter(is_published = True) # Fetching data from db
+    jobs = Job.objects.order_by('-created_at').filter(is_published = True) # Fetching data from db
 
-    paginator = Paginator(jobs,3) 
+    paginator = Paginator(jobs,6) 
     page_number = request.GET.get('page')
     paged_jobs = paginator.get_page(page_number)
 
@@ -61,7 +62,7 @@ def search(request):
 
 
     context = {
-        'location_choices': location_choices,
+        'location_choices': dict(LOCATION),
         'contract_choices': contract_choices,
         'jobs': job_list,
         'values': request.GET # preserving form inputs 
@@ -72,9 +73,10 @@ def search(request):
 @login_required()
 def applyjob(request,job_id):
     job = get_object_or_404(Job , pk=job_id)
-    # if deadline >= datetime.now():
-    #     messages.error(request, 'Deadline is done')
-    #     return redirect('/jobs/'+job_id)    
+    if job.deadline < timezone.now():
+        messages.error(request, 'This job application deadline has passed.')
+        return redirect('/jobs/' + str(job_id))
+    
 
     context = {
         'job': job
@@ -191,8 +193,8 @@ def job_applications(request, job_id):
     if status_filter in dict(Application.STATUS_CHOICES):
         applications = applications.filter(status=status_filter)
         
-     # ✅ Pagination (10 applications per page)
-    paginator = Paginator(applications, 10)  # Show 10 applications per page
+
+    paginator = Paginator(applications, 3)  
     page_number = request.GET.get('page')
     applications_page = paginator.get_page(page_number)  # Get paginated applications
 
