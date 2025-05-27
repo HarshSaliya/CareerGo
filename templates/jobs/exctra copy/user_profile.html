@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block title %} Profile  {% endblock %}
+{% block content %}
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+    }
+    .card-header-custom {
+      background-color: #0d6efd;
+      color: #fff;
+    }
+    .section-title {
+      border-bottom: 2px solid #e9ecef;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <br>
+  <br>
+  <div class="container my-5">  
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Profile Header -->
+    <div class="card mb-4 shadow">
+      <div class="card-header card-header-custom">
+        <div class="d-flex align-items-center">
+          <div class="me-3">
+            {% if personal_info.profile_image %}
+              <img src="{{ personal_info.profile_image.url }}" alt="Profile Image" class="rounded-circle profile-img">
+            {% else %}
+              <img src="https://via.placeholder.com/150" alt="Profile Image" class="rounded-circle profile-img">
+            {% endif %}
+          </div>
+          <div>
+            <h3 class="mb-0">{{ user.first_name }}'s Profile</h3>
+            <small>{{ personal_info.city }}, {{ personal_info.country }}</small>
+          </div>
+          <div class="ms-auto">
+            <!-- Button to scroll down to the edit section -->
+           
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Information -->
+    <div class="card mb-4 shadow">
+      <div class="card-header">
+        <h4 class="section-title mb-0">Personal Information</h4>
+      </div>
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          <li class="list-group-item"><strong>Phone:</strong> {{ personal_info.phone|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Address:</strong> {{ personal_info.address|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>City:</strong> {{ personal_info.city|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>State:</strong> {{ personal_info.state|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Country:</strong> {{ personal_info.country|default:"N/A" }}</li>
+        </ul>
+        <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#personalForm">
+          Edit Personal Info
+        </button>
+        <div class="collapse mt-3" id="personalForm">
+          <form action="{% url 'user_profile' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="update_personal" value="true">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="text" name="phone" class="form-control" placeholder="Phone" value="{{ personal_info.phone }}"
+                pattern="[0-9]{10}" 
+                title="Phone number must be exactly 10 digits"
+                required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="city" class="form-control" placeholder="City" value="{{ personal_info.city }}"
+                pattern="[A-Za-z\s]{2,50}" 
+                title="City name should only contain letters and be 2 to 50 characters long"
+                required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="state" class="form-control" placeholder="State" value="{{ personal_info.state }}"
+                pattern="[A-Za-z\s]{2,50}" 
+                title="state name should only contain letters and be 2 to 50 characters long"
+                required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="country" class="form-control" placeholder="Country" value="{{ personal_info.country }}"
+                pattern="[A-Za-z\s]{2,50}" 
+                title="country name should only contain letters and be 2 to 50 characters long"
+                >
+              </div>
+              <div class="col-12">
+                <textarea name="address" class="form-control" placeholder="Address">{{ personal_info.address }}</textarea>
+              </div>
+              <div class="col-12">
+                <input type="file" name="profile_image" class="form-control">
+              </div>
+            </div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-success">Update Personal Info</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education Information -->
+    <div class="card mb-4 shadow">
+      <div class="card-header">
+        <h4 class="section-title mb-0">Education Information</h4>
+      </div>
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          <li class="list-group-item"><strong>Degree:</strong> {{ education_info.highest_degree|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>University:</strong> {{ education_info.university_name|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Passing Year:</strong> {{ education_info.passing_year|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Grade:</strong> {{ education_info.grade|default:"N/A" }}</li>
+        </ul>
+        <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#educationForm">
+          Edit Education Info
+        </button>
+        <div class="collapse mt-3" id="educationForm">
+          <form action="{% url 'user_profile' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="update_education" value="true">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="text" name="highest_degree" class="form-control" placeholder="Highest Degree"
+                 value="{{ education_info.highest_degree }}"
+                 pattern="[A-Za-z\s]{2,50}" 
+                 title="Degree name should only contain letters and be 2 to 50 characters long">
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="university_name" class="form-control" placeholder="University Name"
+                 value="{{ education_info.university_name }}"
+                 pattern="[A-Za-z\s]{2,50}" 
+                 title="university name should only contain letters and be 2 to 50 characters long">
+              </div>
+              <div class="col-md-6">
+                <input type="number" name="passing_year" class="form-control" placeholder="Passing Year" 
+                value="{{ education_info.passing_year }}"
+                min="1980" max="2026" 
+                title="Enter a valid passing year (1980-2026)" 
+                required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="grade" class="form-control" placeholder="Grade"
+                 value="{{ education_info.grade }}"
+                 value="{{ education_info.grade }}" 
+                 pattern="^(A\+?|B\+?|C\+?|D\+?|E|F|O|S)?$|^[0-9]+(\.[0-9]{1,2})?$" 
+                 title="Enter a valid grade (A+, B+, C, O, S, or a numeric value like 9.5)" 
+                 required>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-success">Update Education Info</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job & Project Information -->
+    <div class="card mb-4 shadow">
+      <div class="card-header">
+        <h4 class="section-title mb-0">Job & Project Information</h4>
+      </div>
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          <li class="list-group-item"><strong>Current Position:</strong> {{ job_info.current_position|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Company Name:</strong> {{ job_info.company_name|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Years of Experience:</strong> {{ job_info.years_of_experience|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Skills:</strong> {{ job_info.skills|default:"N/A" }}</li>
+          <li class="list-group-item">
+            <strong>Resume:</strong>
+            {% if job_info.resume %}
+              <a href="{{ job_info.resume.url }}" class="btn btn-sm btn-primary" download>Download Resume</a>
+            {% else %}
+              <span class="text-muted">No resume uploaded</span>
+            {% endif %}
+          </li>
+        </ul>
+        <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#jobForm">
+          Edit Job Info
+        </button>
+        <div class="collapse mt-3" id="jobForm">
+          <form action="{% url 'user_profile' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="update_job" value="true">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="text" name="current_position" class="form-control" placeholder="Current Position"
+                 value="{{ job_info.current_position }}"
+                 pattern="^[A-Za-z\s]{2,50}$" 
+                 title="Enter a valid position (only letters, min 2 characters)" 
+                 required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="company_name" class="form-control" placeholder="Company Name"
+                 value="{{ job_info.company_name }}"
+                 pattern="^[A-Za-z0-9\s&.,-]{2,100}$" 
+                title="Enter a valid company name (letters, numbers, &, ., -, min 2 characters)" >
+              </div>
+              <div class="col-md-6">
+                <input type="number" name="years_of_experience" class="form-control"
+                 placeholder="Years of Experience" 
+                 value="{{ job_info.years_of_experience }}"
+                 min="0" max="50" 
+                 title="Enter a valid number of years (0-50) Enter 0 if you dont have experince" required>
+              </div>
+              <div class="col-md-6">
+                <textarea name="skills" class="form-control"
+                 placeholder="Skills">{{ job_info.skills }} </textarea>
+              </div>
+              <div class="col-12">
+                <input type="file" name="resume" class="form-control">
+              </div>
+            </div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-success">Update Job Info</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% endblock %}
+
+</body>
+</html>

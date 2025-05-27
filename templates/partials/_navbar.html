@@ -68,12 +68,14 @@
             >
             <a class="nav-link" href="{% url 'jobs' %}">JOBS</a></li>
 
+            {% if user.is_authenticated and user.role != 'company' %}
             
             <li class="nav-item {% if 'profile' in request.path %} active {% endif %}">
               <a class="nav-link d-flex align-items-center" href="{% url 'user_profile' %}">
                   <i class="fas fa-user me-2"></i> <span>Profile</span>
               </a>
           </li>
+          {% endif %}
           
 
 

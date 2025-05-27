@@ -40,7 +40,22 @@ KEYWORDS = {
     "PHP": [
         "PHP", "Laravel", "Symfony", "MySQL", "PostgreSQL", "REST API", "Git",
         "Composer", "MVC", "OOP", "HTML", "CSS", "JavaScript", "jQuery", "AJAX", "MySQL"
+    ],
+     "AI & ML": [
+        "Machine Learning", "Deep Learning", "Neural Networks", "TensorFlow",
+        "PyTorch", "Scikit-learn", "Keras", "Pandas", "NumPy", "SciPy",
+        "Natural Language Processing", "Computer Vision", "Model Training",
+        "Data Preprocessing", "Hyperparameter Tuning", "Pipeline", "API Deployment",
+        "AWS SageMaker", "Google AI Platform", "Model Evaluation", "Data Visualization"
+    ],
+
+    "Full Stack": [
+        "JavaScript", "Node.js", "Express", "React", "Angular", "Vue.js",
+        "HTML5", "CSS3", "Bootstrap", "Tailwind CSS", "REST API", "GraphQL",
+        "MongoDB", "PostgreSQL", "MySQL", "Django", "Flask", "Docker", "Kubernetes",
+        "CI/CD", "Git", "Webpack", "Babel", "Authentication", "Authorization"
     ]
+
 }
 
 def extract_text_from_resume(resume_file):
@@ -88,20 +103,20 @@ def analyze_resume(text, profession, experience_level):
         feedback.append(f"Consider adding: {', '.join(missing_common)}.")
         score -= 6
 
-    # 3 **Check for Profession-Specific Keywords**
+  
     required_keywords = KEYWORDS.get(profession, [])
     found_keywords = [word for word in required_keywords if word.lower() in text_lower]
     missing_keywords = [word for word in required_keywords if word.lower() not in text_lower]
 
     if experience_level.lower() == "fresher" and len(found_keywords) < 7:
         feedback.append(f"Consider adding more skills: {', '.join(missing_keywords[:5])}.")
-        score -= 16
+        score -= 11
     elif experience_level.lower() == "intermediate" and len(found_keywords) < 10:
         feedback.append(f"Your resume could include more skills: {', '.join(missing_keywords[:5])}.")
-        score -= 11
+        score -= 15
     elif experience_level.lower() == "experienced" and len(found_keywords) < 15:
         feedback.append(f"Consider including more advanced skills: {', '.join(missing_keywords[:5])}.")
-        score -= 11
+        score -= 20
 
 
     word_count = len(text.split())
